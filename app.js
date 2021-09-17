@@ -5,6 +5,9 @@ const mongoose = require('mongoose');
 
 const app = express();
 
+const dotenv = require('dotenv').config();
+app.use(express.static(__dirname));
+
 app.set('view engine', 'ejs');
 
 app.use(bodyParser.urlencoded({
@@ -12,7 +15,7 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(express.static("public"));
 
-mongoose.connect(process.env.MONGODB_URI);
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true  });
 
 const articleSchema = {
   title: String,
@@ -25,7 +28,7 @@ const Article = mongoose.model("Article", articleSchema);
 //TODO
 /* Home route */
 app.get("/", (req, res) => {
-  res.send("Building API");
+  res.sendFile(__dirname +'/index.html');
 })
 /* ************************************* */
 
@@ -111,7 +114,7 @@ app.route("/articles/:title")
   })
 
   .patch(function(req,res){
-    Article.update(
+    Article.updateOne(
       {title: req.params.title},
       {$set: req.body},
       function(err){

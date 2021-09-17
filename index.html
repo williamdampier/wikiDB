@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>   
+    <link rel="stylesheet" href="styles.css"> 
+</head>
+<body>    
+    <ul>
+        <li>
+            <input class="api_button" id="get_button"type="button" onclick="get_route()" value="GET All">
+            <input class="api_button" id="get_button"type="button" onclick="get_one_route()" value="GET One">
+            <input id="get_title" type="text" placeholder="Title">
+        </li>
+         <li>
+            <input class="api_button" type="button" onclick="post_route()" value="POST">
+            <input id="post_title" type="text" placeholder="Title">
+            <input id="post_content" type="text" placeholder="Content">
+        </li>
+        <li>
+            <input class="api_button" type="button" onclick="put_route()" value="PUT">
+            <input id="put_target" type="text" placeholder="Article title">
+            <label for="put_title">Change to:</label>
+            <input id="put_title" type="text" placeholder="Title">
+            <input id="put_content" type="text" placeholder="Content">
+        </li>
+        <li>
+            <input class="api_button" type="button" onclick="patch_route()" value="PATCH">
+            <input id="patch_target" type="text" placeholder="Article title">
+            <label for="patch_content">Change content to:</label>
+            <input id="patch_content" type="text" placeholder="Content">
+        </li>
+        <li>
+            <input class="api_button" type="button" onclick="delete_route()" value="DELETE ARTICLE">
+            <input id="delete_title" type="text" placeholder="Title">
+        </li>
+        <li>
+            <input class="api_button" type="button" onclick="delete_all_route()" value="DELETE ALL">
+         
+        </li>
+
+        <p id="output_text" name="output_area" id="" cols="30" rows="10"></p>
+        
+      
+    </ul>
+    <div id="div1"></div>
+
+    <script>
+        const link = window.location.href + "articles";
+        function get_route(){
+            
+            axios.get(link)
+            .then( response => {
+                
+                produce_output(response.data);
+            })
+            .catch(error => { console.log(error)});          
+        }
+
+        function get_one_route() {
+            const get_link = link+"/"+document.getElementById('get_title').value;
+            const params = new URLSearchParams();
+                params.append('title', document.getElementById('get_title').value);
+            axios.get(get_link, params)
+            .then(response => {produce_output(response.data)});
+        }
+
+        function post_route() { 
+               
+            const params = new URLSearchParams();
+                params.append('title', document.getElementById('post_title').value);
+                params.append('content', document.getElementById('post_content').value);
+            axios.post(link, params)
+            .then(response => {produce_output(response.data)});
+            
+        }
+
+        function put_route(){
+            const put_link = link +"/"+ document.getElementById('put_target').value;
+            const params = new URLSearchParams();
+                params.append('title', document.getElementById('put_title').value);
+                params.append('content', document.getElementById('put_content').value);
+            axios.put(put_link, params)
+            .then(response => {produce_output(response.data)});
+        }
+
+        function patch_route() {
+            const patch_link = link +"/"+ document.getElementById('patch_target').value;
+            const params = new URLSearchParams();
+            params.append('content', document.getElementById('patch_content').value);   
+            axios.patch(patch_link, params)
+            .then(response => {produce_output(response.data)});
+        }
+
+        function delete_route(){
+            const delete_link = link+"/"+document.getElementById('delete_title').value;
+            const params = new URLSearchParams();
+            params.append('title', document.getElementById('delete_title').value);
+            axios.delete(delete_link, params)
+            .then(response => {produce_output(response.data)});
+        
+        }
+
+        function delete_all_route(){
+            axios.delete(link).then(response => {produce_output(response.data)});
+        }
+
+        function produce_output(response){
+           
+            
+           
+            
+            document.getElementById('output_text').innerText=JSON.stringify(response);
+        }
+
+
+    </script>
+    
+    
+    
+    
+    
+</body>
+
+</html>
